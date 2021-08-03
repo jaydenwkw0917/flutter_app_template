@@ -64,7 +64,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
+         /* Container(
             width: double.infinity,
             padding: const EdgeInsets.only(top: 40.0),
             child: Container(
@@ -101,7 +101,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                       );
                     },
                   ),
-                  Padding(
+                 /* Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4),
                     child: Text(
                       'Chris Hemsworth',
@@ -111,11 +111,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         fontSize: 18,
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
-          ),
+          ),*/
           const SizedBox(
             height: 4,
           ),
@@ -237,7 +237,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 8, bottom: 8),
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.75 - 64,
+                            width: MediaQuery.of(context).size.width * 0.75,
                             height: 46,
                             decoration: BoxDecoration(
                               color: Colors.blue.withOpacity(0.2),

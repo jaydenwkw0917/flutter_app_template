@@ -33,6 +33,28 @@ dependencies:
     intl: ^0.17.0
     animations: ^2.0.0
 
+    camera: ^0.8.1+7
+    flutter_custom_camera_pugin: ^0.0.5
+    path_provider: ^2.0.2
+    path: any
+    image_picker: any
+    video_player: any
+    metadata: any
+    record: any
+    just_audio: any
+
+    firebase_storage: any
+    cloud_firestore: any
+    firebase_core: any
+    firebase_analytics: any
+    firebase_auth: any
+    google_sign_in: any
+    image: any #
+
+
+
+
+
 dev_dependencies:
     flutter_test:
         sdk: flutter

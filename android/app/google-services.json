@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1048332379354",
+    "project_id": "snap-c95a3",
+    "storage_bucket": "snap-c95a3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048332379354:android:9f259f9689c9743d74f1e3",
+        "android_client_info": {
+          "package_name": "com.example.best_flutter_ui_templates"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048332379354-0ba9e408ioheu01h4kp9ribqdc2ekj6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLZrmPhAtBQEssB1bRU2XASWInLLiXjo4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048332379354-0ba9e408ioheu01h4kp9ribqdc2ekj6i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
