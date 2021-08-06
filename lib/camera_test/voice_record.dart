@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart' as ap;
 import 'package:record/record.dart';
 import 'package:best_flutter_ui_templates/camera_test/audio_player.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 
 class AudioRecorder extends StatefulWidget {
@@ -57,8 +61,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
             ),
             if (_amplitude != null) ...[
               const SizedBox(height: 40),
-              Text('Current: ${_amplitude?.current ?? 0.0}'),
-              Text('Max: ${_amplitude?.max ?? 0.0}'),
+              //Text('Current: ${_amplitude?.current ?? 0.0}'),
+              //Text('Max: ${_amplitude?.max ?? 0.0}'),
             ],
           ],
         ),
@@ -227,6 +231,17 @@ class _MyAppState extends State<VoiceRecord> {
     super.initState();
   }
 
+  Future sendToFireBase(String path) async {
+    await Firebase.initializeApp();
+    FirebaseStorage _storage = FirebaseStorage.instance;
+    DateTime now = new DateTime.now();
+    Reference ref = _storage.ref().child('uploads/audio/' + DateTime(now.year, now.month, now.day).toString()+'/'+now.toString());
+    UploadTask uploadTask = ref.putFile(File(path));
+    uploadTask.then((res) {
+      res.ref.getDownloadURL();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -248,10 +263,14 @@ class _MyAppState extends State<VoiceRecord> {
                 audioSource = ap.AudioSource.uri(Uri.parse(path));
                 showPlayer = true;
               });
+              this.sendToFireBase(path);
             },
           ),
+
+
         ),
       ),
+
     );
   }
 }

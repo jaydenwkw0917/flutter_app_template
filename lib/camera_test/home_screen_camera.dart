@@ -1,9 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:best_flutter_ui_templates/camera_test/cameras.dart';
 import 'package:best_flutter_ui_templates/camera_test/voice_record.dart';
-import 'package:best_flutter_ui_templates/camera_test/image_picker.dart';
 import 'package:best_flutter_ui_templates/camera_test/video.dart';
 import 'package:best_flutter_ui_templates/camera_test/input_form.dart';
+import 'package:best_flutter_ui_templates/camera_test/image_picker_edit.dart';
+//import 'package:best_flutter_ui_templates/camera_test/video_record.dart';
 import 'package:flutter/material.dart';
 
 class StartTakePictureScreen extends StatelessWidget {
@@ -66,7 +67,9 @@ class BottonList extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => imagePicker(),
+        builder: (context) => ImageEditorPro(appBarColor: Colors.black87,
+          bottomBarColor: Colors.black87,
+          pathSave: null, pixelRatio: 1.5,),
       ),
     );
   }
@@ -112,4 +115,5 @@ class BottonList extends StatelessWidget {
 
     );
   }
+
 }

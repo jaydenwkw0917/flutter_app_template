@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,9 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:metadata/metadata.dart' as metadata;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:path/path.dart';
-import 'package:path/path.dart' as p;
-
 import 'package:image/image.dart' as ui;
+import 'package:path_provider/path_provider.dart';
+
+import 'image_picker_edit.dart';
+import 'image_picker_edit.dart';
+import 'modules/disable_screenshots.dart';
 
 
 /*Future<void> main() async {
@@ -37,7 +41,6 @@ import 'package:image/image.dart' as ui;
   );
 }*/
 
-// A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
     Key? key,
@@ -112,9 +115,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // If the picture was taken, display it on a new screen.
             await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
+                builder: (context) => AfterPictureTakenScreen(
                   imagePath: image.path,
                 ),
               ),
@@ -130,11 +131,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   }
 }
 
-// A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
+class AfterPictureTakenScreen extends StatelessWidget {
   final String imagePath;
 
-  const DisplayPictureScreen({Key? key, required this.imagePath})
+  const AfterPictureTakenScreen({Key? key, required this.imagePath})
       : super(key: key);
 
   /*UploadTask uploadImage(File image, String email) {
@@ -144,6 +144,10 @@ class DisplayPictureScreen extends StatelessWidget {
     UploadTask uploadTask = ref.putFile(image);
     return uploadTask;
   }*/
+  Future watermarks(BuildContext context) async{
+    WaterMarks _plugin = WaterMarks();
+    _plugin.addWatermark(context, "CW", rowCount: 4, columnCount: 8);
+  }
 
   Future uploadImageToFirebase(String imagePath) async {
     await Firebase.initializeApp();
@@ -173,7 +177,14 @@ class DisplayPictureScreen extends StatelessWidget {
       }
     }*/
   }
-
+  void pushToDisplayImage (BuildContext context, String imagePath) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DisplayPictureScreen(imagePath: imagePath),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     var abc = Image.file(File(imagePath));
@@ -186,19 +197,81 @@ class DisplayPictureScreen extends StatelessWidget {
     } else {
       print('File:jpg, Error: ${result.error}');
     }
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      body: RaisedButton(
-        child: Text('uploadImageToFirebase'),
-        onPressed: () {
-          this.uploadImageToFirebase(imagePath);
-        },
+    return Center(
+      child: new ButtonBar(
+          alignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              child: Text('uploadImageToFirebase'),
+              onPressed: () {
+                this.uploadImageToFirebase(imagePath);
+              },
+            ),
+            RaisedButton(
+              child: Text('DisplayImage'),
+              onPressed: () {this.pushToDisplayImage(context, imagePath);
+              },
+            ),
+            RaisedButton(
+              child: Text('watermark'),
+              onPressed: () {this.watermarks(context);
+              },
+            ),
+          ]
       ),
+
     );
   }
 
+
+}
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+  const DisplayPictureScreen({Key? key, required this.imagePath})
+      : super(key: key);
+
+    Future<File> mergeWaterMark (String imagePath) async {
+      final originalImage = ui.decodeImage(File(imagePath).readAsBytesSync());
+      final waterMarkImage  = ui.decodeImage((await rootBundle.load('assets/hotel/watermark3.png')).buffer.asUint8List());
+
+    int width = max(originalImage!.width , waterMarkImage!.width);
+    int height = max(originalImage!.height, waterMarkImage!.height);
+    final mergedImage = ui.Image(width, height);
+    ui.copyInto(mergedImage, originalImage, blend: false);
+    ui.copyInto(mergedImage, waterMarkImage, blend :false);
+
+    final documentDirectory = await getApplicationDocumentsDirectory();
+    final file = new File(join(documentDirectory.path, "merged_image.jpg"));
+    file.writeAsBytesSync(ui.encodeJpg(mergedImage));
+
+    return file;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    //File mergedImage = mergeWaterMark(imagePath) as File;
+    return FutureBuilder<File>(
+        future: mergeWaterMark(imagePath),
+        builder: (context, AsyncSnapshot<File> mergedImage) {
+
+          if (mergedImage.hasData) {
+            return Scaffold(
+              appBar: AppBar(title: const Text('Display the Picture')),
+              body: Image.file(mergedImage.data ?? File(imagePath)),
+              //body: Image.file(File(imagePath)),
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        }
+    );
+    /*return Scaffold(
+      appBar: AppBar(title: const Text('Display the Picture')),
+      body: Image.file(mergedImage),
+      //body: Image.file(File(imagePath)),
+    );*/
+  }
 
 }

@@ -50,6 +50,14 @@ dependencies:
     firebase_auth: any
     google_sign_in: any
     image: any #
+    image_editor_pro: any
+    flutter_colorpicker: any
+    screenshot: any
+    signature: any
+
+
+
+
 
 
 

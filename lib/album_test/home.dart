@@ -1,6 +1,5 @@
 import 'package:camera/camera.dart';
 import 'package:best_flutter_ui_templates/album_test/test.dart';
-import 'package:best_flutter_ui_templates/album_test/image_picker.dart';
 import 'package:flutter/material.dart';
 
 class StartTestScreen extends StatelessWidget {
@@ -25,12 +24,12 @@ class StartTestScreen extends StatelessWidget {
     } on CameraException catch (e) {
       logError(e.code, e.description);
     }
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => MyApp(),
       ),
-    );
+    );*/
   }
 
   @override

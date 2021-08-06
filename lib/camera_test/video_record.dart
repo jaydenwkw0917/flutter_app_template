@@ -8,10 +8,10 @@ import 'package:video_player/video_player.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class CameraExampleHome extends StatefulWidget {
+class VideoRecord extends StatefulWidget {
   @override
-  _CameraExampleHomeState createState() {
-    return _CameraExampleHomeState();
+  _VideoRecord createState() {
+    return _VideoRecord();
   }
 }
 
@@ -37,7 +37,7 @@ void logError(String code, String? message) {
   }
 }
 
-class _CameraExampleHomeState extends State<CameraExampleHome>
+class _VideoRecord extends State<VideoRecord>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   CameraController? controller;
   XFile? imageFile;
@@ -124,7 +124,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Camera example'),
+        title: const Text('Take Video'),
       ),
       body: Column(
         children: <Widget>[
@@ -167,8 +167,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
-    final CameraController? cameraController = controller;
-
+    CameraController? cameraController = controller;
+    //CameraDescription description = CameraDescription(name : "0", lensDirection: CameraLensDirection.back, sensorOrientation:90);
+    //cameraController = CameraController(description, ResolutionPreset.medium,);
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Text(
         'Tap a camera',
@@ -873,22 +874,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
-  Future sendToFireBase(String path) async {
-    await Firebase.initializeApp();
-    FirebaseStorage _storage = FirebaseStorage.instance;
-    DateTime now = new DateTime.now();
-    Reference ref = _storage.ref().child('uploads/video/' + DateTime(now.year, now.month, now.day).toString()+'/'+now.toString());
-    UploadTask uploadTask = ref.putFile(File(path));
-    uploadTask.then((res) {
-      res.ref.getDownloadURL();
-    });
-  }
-
   Future<void> _startVideoPlayer() async {
     if (videoFile == null) {
       return;
     }
-    this.sendToFireBase(videoFile!.path);
+
     final VideoPlayerController vController =
     VideoPlayerController.file(File(videoFile!.path));
     videoPlayerListener = () {
@@ -942,23 +932,12 @@ class CameraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: CameraExampleHome(),
+      home: VideoRecord(),
     );
   }
 }
 
 List<CameraDescription> cameras = [];
-
-/*Future<void> main() async {
-  // Fetch the available cameras before initializing the app.
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    cameras = await availableCameras();
-  } on CameraException catch (e) {
-    logError(e.code, e.description);
-  }
-  runApp(CameraApp());
-}*/
 
 /// This allows a value of type T or T? to be treated as a value of type T?.
 ///
