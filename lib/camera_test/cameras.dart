@@ -14,6 +14,7 @@ import 'package:path/path.dart';
 import 'package:image/image.dart' as ui;
 import 'package:path_provider/path_provider.dart';
 
+import 'firebase_image_display.dart';
 import 'image_picker_edit.dart';
 import 'image_picker_edit.dart';
 import 'modules/disable_screenshots.dart';
@@ -149,7 +150,7 @@ class AfterPictureTakenScreen extends StatelessWidget {
     _plugin.addWatermark(context, "CW", rowCount: 4, columnCount: 8);
   }
 
-  Future uploadImageToFirebase(String imagePath) async {
+  Future uploadImageToFirebase(BuildContext context, String imagePath) async {
     await Firebase.initializeApp();
     //var uploadTask = uploadImage(File(imagePath), '12019240@life.hkbu.edu.hk');
     FirebaseStorage _storage = FirebaseStorage.instance;
@@ -157,10 +158,12 @@ class AfterPictureTakenScreen extends StatelessWidget {
     //.child("test_image" + DateTime.now().toString())
     //.putFile(File(imagePath));
     DateTime now = new DateTime.now();
-    Reference ref = _storage.ref().child('uploads/' + DateTime(now.year, now.month, now.day).toString()+'/'+now.toString());
+    Reference ref = _storage.ref().child('uploads/' + DateTime(now.year, now.month, now.day).toString().substring(0,10)+'/'+now.toString());
     UploadTask uploadTask = ref.putFile(File(imagePath));
-    uploadTask.then((res) {
-      res.ref.getDownloadURL();
+    uploadTask.then((res) async {
+      var url =  await res.ref.getDownloadURL();
+      //res.ref.getDownloadURL();
+      this.pushToDisplayFirebase(context, Image.network(url));
     });
     //Auth
     /*FirebaseAuth mAuth = FirebaseAuth.instance;
@@ -185,9 +188,29 @@ class AfterPictureTakenScreen extends StatelessWidget {
       ),
     );
   }
+  void pushToDisplayFirebase (BuildContext context, Image image) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DisplayFireBaseimage(image: image),
+      ),
+    );
+  }
+  Future<String> pushToEditPhoto(BuildContext context, String imagePath) async {
+    final editedImagePath = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageEditorPro(appBarColor: Colors.black87,
+          bottomBarColor: Colors.black87,
+          pathSave: null, pixelRatio: 1.5,imagePath: imagePath,),
+      ),
+    );
+    return editedImagePath;
+  }
+
   @override
   Widget build(BuildContext context) {
-    var abc = Image.file(File(imagePath));
+    context = context;
     var file = imagePath;
     var bytes = File(file).readAsBytesSync();
     var result = metadata.MetaData.exifData(bytes);
@@ -204,7 +227,7 @@ class AfterPictureTakenScreen extends StatelessWidget {
             RaisedButton(
               child: Text('uploadImageToFirebase'),
               onPressed: () {
-                this.uploadImageToFirebase(imagePath);
+                this.uploadImageToFirebase(context, imagePath);
               },
             ),
             RaisedButton(
@@ -215,6 +238,11 @@ class AfterPictureTakenScreen extends StatelessWidget {
             RaisedButton(
               child: Text('watermark'),
               onPressed: () {this.watermarks(context);
+              },
+            ),
+            RaisedButton(
+              child: Text('edit photo'),
+              onPressed: () {this.pushToEditPhoto(context,imagePath);
               },
             ),
           ]
@@ -231,17 +259,19 @@ class DisplayPictureScreen extends StatelessWidget {
       : super(key: key);
 
     Future<File> mergeWaterMark (String imagePath) async {
+      var path = imagePath;
       final originalImage = ui.decodeImage(File(imagePath).readAsBytesSync());
-      final waterMarkImage  = ui.decodeImage((await rootBundle.load('assets/hotel/watermark3.png')).buffer.asUint8List());
+      final waterMarkImage  = ui.decodeImage((await rootBundle.load('assets/hotel/watermarkB.png')).buffer.asUint8List());
 
     int width = max(originalImage!.width , waterMarkImage!.width);
     int height = max(originalImage!.height, waterMarkImage!.height);
     final mergedImage = ui.Image(width, height);
     ui.copyInto(mergedImage, originalImage, blend: false);
-    ui.copyInto(mergedImage, waterMarkImage, blend :false);
+    ui.copyInto(mergedImage, waterMarkImage, blend :true);
 
     final documentDirectory = await getApplicationDocumentsDirectory();
-    final file = new File(join(documentDirectory.path, "merged_image.jpg"));
+    final file = await File(imagePath).create(); //overwrite the file
+    //final file = new File(join(documentDirectory.path, DateTime.now().toString() + '_watermark.jpg'));
     file.writeAsBytesSync(ui.encodeJpg(mergedImage));
 
     return file;

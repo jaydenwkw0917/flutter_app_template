@@ -42,8 +42,9 @@ class ImageEditorPro extends StatefulWidget {
   final Color? bottomBarColor;
   final Directory? pathSave;
   final double? pixelRatio;
+  final String imagePath;
   ImageEditorPro(
-      { this.appBarColor,  this.bottomBarColor, this.pathSave,  this.pixelRatio});
+      { this.appBarColor,  this.bottomBarColor, this.pathSave,  this.pixelRatio, required this.imagePath});
 
   @override
   _ImageEditorProState createState() => _ImageEditorProState();
@@ -104,7 +105,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
     offsets.clear();
     //  multiwidget.clear();
     howmuchwidgetis = 0;
-
+    _image = new File(widget.imagePath);
     super.initState();
   }
 
@@ -311,13 +312,13 @@ class _ImageEditorProState extends State<ImageEditorPro> {
 
                     final paths =
                         widget.pathSave ?? await getTemporaryDirectory();
-
-                    final file = await File('${paths.path}/' +
-                        DateTime.now().toString() +
-                        '.jpg')
-                        .create();
+                    final editedImagePath ='${paths.path}/' +
+                        DateTime.now().toString() + '.jpg';
+                    //final file = await File(editedImagePath)
+                        //.create();
+                    final file = await File(widget.imagePath).create(); //overwrite the image
                     file.writeAsBytesSync(binaryIntList);
-                    Navigator.pop(context, file);
+                    Navigator.pop(context, editedImagePath);
                   }).catchError((onError) {
                     print(onError);
                   });

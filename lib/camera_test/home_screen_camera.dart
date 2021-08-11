@@ -69,7 +69,7 @@ class BottonList extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => ImageEditorPro(appBarColor: Colors.black87,
           bottomBarColor: Colors.black87,
-          pathSave: null, pixelRatio: 1.5,),
+          pathSave: null, pixelRatio: 1.5, imagePath:''),
       ),
     );
   }
@@ -80,12 +80,12 @@ class BottonList extends StatelessWidget {
       child: new ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            /*RaisedButton(
               child: Text('Form'),
               onPressed: () {
                 this.pushToForm(context);
               },
-            ),
+            ),*/
             RaisedButton(
               child: Text('Photo'),
               onPressed: () {

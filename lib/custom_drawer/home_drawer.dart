@@ -27,7 +27,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         labelName: 'Home',
         icon: Icon(Icons.home),
       ),
-      DrawerList(
+      /*DrawerList(
         index: DrawerIndex.Help,
         labelName: 'Help',
         isAssetsImage: true,
@@ -52,7 +52,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         index: DrawerIndex.About,
         labelName: 'About Us',
         icon: Icon(Icons.info),
-      ),
+      ),*/
     ];
   }
 
@@ -267,12 +267,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
 enum DrawerIndex {
   HOME,
-  FeedBack,
-  Help,
-  Share,
-  About,
-  Invite,
-  Testing,
 }
 
 class DrawerList {

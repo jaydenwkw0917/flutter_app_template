@@ -1,10 +1,8 @@
-import 'package:best_flutter_ui_templates/design_course/home_design_course.dart';
-import 'package:best_flutter_ui_templates/fitness_app/fitness_app_home_screen.dart';
-import 'package:best_flutter_ui_templates/hotel_booking/hotel_home_screen.dart';
-import 'package:best_flutter_ui_templates/introduction_animation/introduction_animation_screen.dart';
 import 'package:best_flutter_ui_templates/camera_test/home_screen_camera.dart';
 import 'package:best_flutter_ui_templates/album_test/home.dart';
 import 'package:flutter/widgets.dart';
+
+import '../home_screen.dart';
 
 class HomeList {
   HomeList({
@@ -17,20 +15,20 @@ class HomeList {
 
   static List<HomeList> homeList = [
     HomeList(
-      imagePath: 'assets/introduction_animation/test1.png',
+      imagePath: 'assets/images/test1.png',
       navigateScreen: StartTakePictureScreen(),
     ),
     HomeList(
-      imagePath: 'assets/hotel/test2.png',
-      navigateScreen: StartTakePictureScreen(),
+      imagePath: 'assets/images/test2.png',
+      navigateScreen: StartAlbumScreen(),
     ),
     HomeList(
-      imagePath: 'assets/fitness_app/test3.png',
-      navigateScreen: StartTakePictureScreen(),
+      imagePath: 'assets/images/test3.png',
+      navigateScreen: MyHomePage(),
     ),
     HomeList(
-      imagePath: 'assets/design_course/test4.png',
-      navigateScreen: StartTakePictureScreen(),
+      imagePath: 'assets/images/test4.png',
+      navigateScreen: MyHomePage(),
     ),
   ];
 }
